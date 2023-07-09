@@ -1,0 +1,97 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+class Driver {
+    private String name;
+    private String carModel;
+    private double rating;
+    private double distanceFromCustomer;
+
+    public Driver(String name, String carModel, double rating, double distanceFromCustomer) {
+        this.name = name;
+        this.carModel = carModel;
+        this.rating = rating;
+        this.distanceFromCustomer = distanceFromCustomer;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCarModel() {
+        return carModel;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public double getDistanceFromCustomer() {
+        return distanceFromCustomer;
+    }
+}
+
+class RideBookingSystem {
+    private List<Driver> drivers;
+    private double rideDistance;
+    private String requestedCarModel;
+
+    public RideBookingSystem(double rideDistance, String requestedCarModel) {
+        this.drivers = new ArrayList<>();
+        this.rideDistance = rideDistance;
+        this.requestedCarModel = requestedCarModel;
+    }
+
+    public void addDriver(Driver driver) {
+        drivers.add(driver);
+    }
+
+    public void bookRide() {
+        Driver closestDriver = null;
+
+        for (Driver driver : drivers) {
+            if (driver.getRating() >= 4 && driver.getCarModel().equals(requestedCarModel)) {
+                if (closestDriver == null || driver.getDistanceFromCustomer() < closestDriver.getDistanceFromCustomer()) {
+                    closestDriver = driver;
+                }
+            }
+        }
+
+        if (closestDriver == null) {
+            System.out.println("No driver available with the requested car model.");
+            return;
+        }
+
+        System.out.println("Driver " + closestDriver.getName() + " will get you to the destination.");
+        double totalCost = rideDistance * 8;
+        System.out.println("Your charge will be Rs " + totalCost);
+    }
+}
+
+public class RideBookingApp {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Customer Ride Distance (in km): ");
+        double rideDistance = scanner.nextDouble();
+        scanner.nextLine();
+
+        System.out.print("Car Requested: ");
+        String requestedCarModel = scanner.nextLine();
+
+        RideBookingSystem rideBookingSystem = new RideBookingSystem(rideDistance, requestedCarModel);
+
+        System.out.println("List of Drivers with Details:");
+        System.out.println("Driver\tCar Model\tRating\tDistance From Customer");
+
+        // Add drivers to the ride booking system
+        rideBookingSystem.addDriver(new Driver("A", "Sedan", 4, 500));
+        rideBookingSystem.addDriver(new Driver("B", "Hatchback", 4.3, 1000));
+        rideBookingSystem.addDriver(new Driver("C", "5-Seater", 4.8, 200));
+        rideBookingSystem.addDriver(new Driver("D", "Sedan", 4.1, 700));
+        rideBookingSystem.addDriver(new Driver("E", "Hatchback", 4.7, 430));
+
+        rideBookingSystem.bookRide();
+    }
+}
